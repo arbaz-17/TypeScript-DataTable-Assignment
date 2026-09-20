@@ -1,6 +1,7 @@
 import DataTable from "./components/DataTable/DataTable";
 
-import type { Column } from "./components/DataTable/types";
+import type { Column, SelectFilterUnion } from "./components/DataTable/types";
+
 import type { Project } from "./types/project";
 import type { User } from "./types/user";
 
@@ -11,9 +12,9 @@ function formatLabel(value: string) {
   return value.charAt(0).toUpperCase() + value.slice(1);
 }
 
-/* ----------------------------- */
-/* Project callbacks             */
-/* ----------------------------- */
+/* -------------------------------- */
+/* Project callbacks                */
+/* -------------------------------- */
 
 function handleProjectClick(project: Project) {
   console.log("Selected project:", project);
@@ -27,9 +28,9 @@ function handleDeleteProject(project: Project) {
   console.log("Delete project:", project);
 }
 
-/* ----------------------------- */
-/* User callbacks                */
-/* ----------------------------- */
+/* -------------------------------- */
+/* User callbacks                   */
+/* -------------------------------- */
 
 function handleUserClick(user: User) {
   console.log("Selected user:", user);
@@ -43,9 +44,9 @@ function handleDeleteUser(user: User) {
   console.log("Delete user:", user);
 }
 
-/* ----------------------------- */
-/* Project columns               */
-/* ----------------------------- */
+/* -------------------------------- */
+/* Project columns                  */
+/* -------------------------------- */
 
 const projectColumns: Column<Project>[] = [
   {
@@ -53,28 +54,30 @@ const projectColumns: Column<Project>[] = [
     key: "name",
     header: "Project Name",
     sortable: true,
-    searchable: true,
   },
   {
     kind: "data",
     key: "status",
     header: "Status",
-    searchable: true,
-    render: (status) => <span>{formatLabel(status)}</span>,
+    render: (status) => (
+      <span className={`badge badge--${status}`}>{formatLabel(status)}</span>
+    ),
   },
   {
     kind: "data",
     key: "priority",
     header: "Priority",
-    searchable: true,
-    render: (priority) => <span>{formatLabel(priority)}</span>,
+    render: (priority) => (
+      <span className={`badge badge--${priority}`}>
+        {formatLabel(priority)}
+      </span>
+    ),
   },
   {
     kind: "data",
     key: "createdAt",
     header: "Created At",
     sortable: true,
-    searchable: true,
     render: (createdAt) => <time dateTime={createdAt}>{createdAt}</time>,
   },
   {
@@ -82,8 +85,9 @@ const projectColumns: Column<Project>[] = [
     id: "actions",
     header: "Actions",
     render: (project) => (
-      <div>
+      <div className="table-actions">
         <button
+          className="table-action"
           type="button"
           onClick={(event) => {
             event.stopPropagation();
@@ -94,6 +98,7 @@ const projectColumns: Column<Project>[] = [
         </button>
 
         <button
+          className="table-action table-action--danger"
           type="button"
           onClick={(event) => {
             event.stopPropagation();
@@ -107,9 +112,52 @@ const projectColumns: Column<Project>[] = [
   },
 ];
 
-/* ----------------------------- */
-/* User columns                  */
-/* ----------------------------- */
+/* -------------------------------- */
+/* Project filters                  */
+/* -------------------------------- */
+
+const projectFilters: SelectFilterUnion<Project>[] = [
+  {
+    key: "status",
+    label: "Status",
+    options: [
+      {
+        label: "Planned",
+        value: "planned",
+      },
+      {
+        label: "Active",
+        value: "active",
+      },
+      {
+        label: "Completed",
+        value: "completed",
+      },
+    ],
+  },
+  {
+    key: "priority",
+    label: "Priority",
+    options: [
+      {
+        label: "Low",
+        value: "low",
+      },
+      {
+        label: "Medium",
+        value: "medium",
+      },
+      {
+        label: "High",
+        value: "high",
+      },
+    ],
+  },
+];
+
+/* -------------------------------- */
+/* User columns                     */
+/* -------------------------------- */
 
 const userColumns: Column<User>[] = [
   {
@@ -117,36 +165,39 @@ const userColumns: Column<User>[] = [
     key: "name",
     header: "Name",
     sortable: true,
-    searchable: true,
   },
   {
     kind: "data",
     key: "email",
     header: "Email",
     sortable: true,
-    searchable: true,
   },
   {
     kind: "data",
     key: "role",
     header: "Role",
-    searchable: true,
-    render: (role) => <span>{formatLabel(role)}</span>,
+    render: (role) => (
+      <span className={`badge badge--${role}`}>{formatLabel(role)}</span>
+    ),
   },
   {
     kind: "data",
     key: "active",
     header: "Status",
-    searchable: true,
-    render: (active) => <span>{active ? "Active" : "Inactive"}</span>,
+    render: (active) => (
+      <span className={`badge ${active ? "badge--active" : "badge--inactive"}`}>
+        {active ? "Active" : "Inactive"}
+      </span>
+    ),
   },
   {
     kind: "display",
     id: "actions",
     header: "Actions",
     render: (user) => (
-      <div>
+      <div className="table-actions">
         <button
+          className="table-action"
           type="button"
           onClick={(event) => {
             event.stopPropagation();
@@ -157,6 +208,7 @@ const userColumns: Column<User>[] = [
         </button>
 
         <button
+          className="table-action table-action--danger"
           type="button"
           onClick={(event) => {
             event.stopPropagation();
@@ -170,28 +222,82 @@ const userColumns: Column<User>[] = [
   },
 ];
 
+/* -------------------------------- */
+/* User filters                     */
+/* -------------------------------- */
+
+const userFilters: SelectFilterUnion<User>[] = [
+  {
+    key: "role",
+    label: "Role",
+    options: [
+      {
+        label: "Admin",
+        value: "admin",
+      },
+      {
+        label: "Developer",
+        value: "developer",
+      },
+      {
+        label: "Viewer",
+        value: "viewer",
+      },
+    ],
+  },
+];
+
 function App() {
   return (
-    <main>
-      <h1>Generic DataTable</h1>
+    <main className="app-shell">
+      <header className="app-header">
+        <span className="app-eyebrow">TypeScript DataTable Assignment - Optimus Fox</span>
 
-      <section>
-        <h2>Projects</h2>
+        <h1>Generic DataTable</h1>
+
+        <p>
+          A reusable, type-safe React DataTable with sorting, filtering, custom
+          cells and typed callbacks.
+        </p>
+      </header>
+
+      <section className="data-section">
+        <div className="section-heading">
+          <div>
+            <span className="section-kicker">Dataset 01</span>
+
+            <h2>Projects</h2>
+          </div>
+
+          <span className="section-count">{projects.length} projects</span>
+        </div>
 
         <DataTable
           rows={projects}
           columns={projectColumns}
+          searchKey="name"
+          filters={projectFilters}
           getRowId={(project) => project.id}
           onRowClick={handleProjectClick}
         />
       </section>
 
-      <section>
-        <h2>Users</h2>
+      <section className="data-section">
+        <div className="section-heading">
+          <div>
+            <span className="section-kicker">Dataset 02</span>
+
+            <h2>Users</h2>
+          </div>
+
+          <span className="section-count">{users.length} users</span>
+        </div>
 
         <DataTable
           rows={users}
           columns={userColumns}
+          searchKey="name"
+          filters={userFilters}
           getRowId={(user) => user.id}
           onRowClick={handleUserClick}
         />
