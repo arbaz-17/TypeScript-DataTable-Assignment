@@ -1,0 +1,104 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
+
+:root {
+  font-family: "Poppins", system-ui, sans-serif;
+
+  color: #f5f5f5;
+  background: #0f0f0f;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+
+  --color-bg: #0f0f0f;
+  --color-bg-elevated: #141414;
+
+  --color-surface: #181818;
+  --color-surface-soft: #202020;
+  --color-surface-hover: #282828;
+
+  --color-text: #f5f5f5;
+  --color-text-soft: #d6d6d6;
+  --color-text-muted: #989898;
+
+  --color-dark: #111111;
+  --color-dark-soft: #1d1d1d;
+
+  --color-border: #2e2e2e;
+  --color-border-strong: #414141;
+
+  --color-orange: #f97316;
+  --color-orange-hover: #fb923c;
+  --color-orange-dark: #ea580c;
+
+  --color-orange-soft: rgb(249 115 22 / 10%);
+
+  --color-orange-soft-strong: rgb(249 115 22 / 16%);
+
+  --color-danger: #f87171;
+
+  --color-danger-soft: rgb(248 113 113 / 10%);
+
+  --shadow-small: 0 1px 2px rgb(0 0 0 / 35%);
+
+  --shadow-card: 0 18px 45px rgb(0 0 0 / 32%);
+
+  --radius-small: 8px;
+  --radius-medium: 12px;
+  --radius-large: 18px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
+  background: var(--color-bg);
+}
+
+body {
+  margin: 0;
+
+  min-width: 320px;
+  min-height: 100vh;
+
+  background:
+    radial-gradient(
+      circle at top left,
+      rgb(249 115 22 / 6%),
+      transparent 28rem
+    ),
+    linear-gradient(180deg, #101010 0%, #0b0b0b 100%);
+
+  color: var(--color-text);
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+input,
+select {
+  color: var(--color-text);
+}
+
+::selection {
+  background: var(--color-orange);
+  color: #ffffff;
+}
+
+:focus-visible {
+  outline: 3px solid rgb(249 115 22 / 35%);
+
+  outline-offset: 2px;
+}
