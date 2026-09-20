@@ -1,6 +1,6 @@
 import DataTable from "./components/DataTable/DataTable";
 
-import type { Column, SelectFilterUnion } from "./components/DataTable/types";
+import type { Column, SelectFilterUnion } from "./components/DataTable/types/types";
 
 import type { Project } from "./types/project";
 import type { User } from "./types/user";

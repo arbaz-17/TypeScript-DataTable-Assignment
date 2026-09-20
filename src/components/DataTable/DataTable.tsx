@@ -2,7 +2,7 @@ import { useId, useMemo, useState } from "react";
 
 import type { KeyboardEvent, ReactNode } from "react";
 
-import type { Column, DataTableProps, SortState } from "./types";
+import type { Column, DataTableProps, SortState } from "./types/types";
 
 function renderDefaultValue(value: unknown): ReactNode {
   if (value === null || value === undefined) {
