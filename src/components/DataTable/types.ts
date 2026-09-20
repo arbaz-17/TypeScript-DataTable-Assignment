@@ -1,5 +1,12 @@
 import type { ReactNode } from "react";
 
+export type SortDirection = "asc" | "desc";
+
+export type SortState<T> = {
+  key: keyof T;
+  direction: SortDirection;
+};
+
 export type DataColumn<T, K extends keyof T> = {
   kind: "data";
   key: K;
@@ -20,7 +27,9 @@ export type DisplayColumn<T> = {
   render: (row: T) => ReactNode;
 };
 
-export type Column<T> = DataColumnUnion<T> | DisplayColumn<T>;
+export type Column<T> =
+  | DataColumnUnion<T>
+  | DisplayColumn<T>;
 
 export type DataTableProps<T> = {
   rows: T[];
