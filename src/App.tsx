@@ -1,6 +1,9 @@
 import DataTable from "./components/DataTable/DataTable";
 
-import type { Column, SelectFilterUnion } from "./components/DataTable/types";
+import type {
+  Column,
+  SelectFilterUnion,
+} from "./components/DataTable/types/types";
 
 import type { Project } from "./types/project";
 import type { User } from "./types/user";
@@ -12,9 +15,7 @@ function formatLabel(value: string) {
   return value.charAt(0).toUpperCase() + value.slice(1);
 }
 
-/* -------------------------------- */
-/* Project callbacks                */
-/* -------------------------------- */
+// As the assignment is focsued on the typed DataTable component, the following functions are just placeholders.
 
 function handleProjectClick(project: Project) {
   console.log("Selected project:", project);
@@ -28,10 +29,6 @@ function handleDeleteProject(project: Project) {
   console.log("Delete project:", project);
 }
 
-/* -------------------------------- */
-/* User callbacks                   */
-/* -------------------------------- */
-
 function handleUserClick(user: User) {
   console.log("Selected user:", user);
 }
@@ -43,10 +40,6 @@ function handleEditUser(user: User) {
 function handleDeleteUser(user: User) {
   console.log("Delete user:", user);
 }
-
-/* -------------------------------- */
-/* Project columns                  */
-/* -------------------------------- */
 
 const projectColumns: Column<Project>[] = [
   {
@@ -112,10 +105,6 @@ const projectColumns: Column<Project>[] = [
   },
 ];
 
-/* -------------------------------- */
-/* Project filters                  */
-/* -------------------------------- */
-
 const projectFilters: SelectFilterUnion<Project>[] = [
   {
     key: "status",
@@ -154,10 +143,6 @@ const projectFilters: SelectFilterUnion<Project>[] = [
     ],
   },
 ];
-
-/* -------------------------------- */
-/* User columns                     */
-/* -------------------------------- */
 
 const userColumns: Column<User>[] = [
   {
@@ -222,10 +207,6 @@ const userColumns: Column<User>[] = [
   },
 ];
 
-/* -------------------------------- */
-/* User filters                     */
-/* -------------------------------- */
-
 const userFilters: SelectFilterUnion<User>[] = [
   {
     key: "role",
@@ -251,7 +232,9 @@ function App() {
   return (
     <main className="app-shell">
       <header className="app-header">
-        <span className="app-eyebrow">TypeScript DataTable Assignment - Optimus Fox</span>
+        <span className="app-eyebrow">
+          TypeScript DataTable Assignment - Optimus Fox
+        </span>
 
         <h1>Generic DataTable</h1>
 
