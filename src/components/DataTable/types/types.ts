@@ -12,7 +12,6 @@ export type DataColumn<T, K extends keyof T> = {
   key: K;
   header: string;
   sortable?: boolean;
-  searchable?: boolean;
   render?: (value: T[K], row: T) => ReactNode;
 };
 
@@ -27,13 +26,32 @@ export type DisplayColumn<T> = {
   render: (row: T) => ReactNode;
 };
 
-export type Column<T> =
-  | DataColumnUnion<T>
-  | DisplayColumn<T>;
+export type Column<T> = DataColumnUnion<T> | DisplayColumn<T>;
+
+export type FilterOption<TValue> = {
+  label: string;
+  value: TValue;
+};
+
+export type SelectFilter<T, K extends keyof T> = {
+  key: K;
+  label: string;
+  options: readonly FilterOption<T[K]>[];
+};
+
+export type SelectFilterUnion<T> = {
+  [K in keyof T]: SelectFilter<T, K>;
+}[keyof T];
 
 export type DataTableProps<T> = {
   rows: T[];
   columns: Column<T>[];
+
   getRowId: (row: T) => string | number;
+
+  searchKey?: keyof T;
+
+  filters?: SelectFilterUnion<T>[];
+
   onRowClick?: (row: T) => void;
 };

@@ -1,62 +1,11 @@
-import { useId, useMemo, useState } from "react";
+import { useId } from "react";
+import type { KeyboardEvent } from "react";
+import type { DataTableProps } from "./types/types";
 
-import type { KeyboardEvent, ReactNode } from "react";
+import { renderCell } from "../../utils/helpers";
 
-import type { Column, DataTableProps, SortState } from "./types/types";
-
-function renderDefaultValue(value: unknown): ReactNode {
-  if (value === null || value === undefined) {
-    return "—";
-  }
-
-  if (
-    typeof value === "string" ||
-    typeof value === "number" ||
-    typeof value === "boolean"
-  ) {
-    return String(value);
-  }
-
-  return "—";
-}
-
-function renderCell<T>(column: Column<T>, row: T): ReactNode {
-  if (column.kind === "display") {
-    return column.render(row);
-  }
-
-  const value = row[column.key];
-
-  if (column.render) {
-    return column.render(value, row);
-  }
-
-  return renderDefaultValue(value);
-}
-
-function compareValues(firstValue: unknown, secondValue: unknown): number {
-  if (typeof firstValue === "number" && typeof secondValue === "number") {
-    return firstValue - secondValue;
-  }
-
-  if (typeof firstValue === "string" && typeof secondValue === "string") {
-    return firstValue.localeCompare(secondValue);
-  }
-
-  return 0;
-}
-
-function getSearchableValue(value: unknown): string | null {
-  if (
-    typeof value === "string" ||
-    typeof value === "number" ||
-    typeof value === "boolean"
-  ) {
-    return String(value);
-  }
-
-  return null;
-}
+import useTableFiltering from "./hooks/useTableFiltering";
+import useTableSorting from "./hooks/useTableSorting";
 
 function DataTable<T>({
   rows,
@@ -69,39 +18,21 @@ function DataTable<T>({
   const searchId = useId();
   const filterGroupId = useId();
 
-  const [searchQuery, setSearchQuery] = useState("");
+  const {
+    searchQuery,
+    setSearchQuery,
+    filterValues,
+    handleFilterChange,
+    clearFilters,
+    filteredRows,
+    hasActiveFilters,
+  } = useTableFiltering({
+    rows,
+    searchKey,
+    filters,
+  });
 
-  const [filterValues, setFilterValues] = useState<Record<string, string>>({});
-
-  const [sortState, setSortState] = useState<SortState<T> | null>(null);
-
-  function handleSort(key: keyof T) {
-    setSortState((currentSort) => {
-      if (currentSort?.key === key) {
-        return {
-          key,
-          direction: currentSort.direction === "asc" ? "desc" : "asc",
-        };
-      }
-
-      return {
-        key,
-        direction: "asc",
-      };
-    });
-  }
-
-  function handleFilterChange(key: keyof T, selectedOption: string) {
-    setFilterValues((currentValues) => ({
-      ...currentValues,
-      [String(key)]: selectedOption,
-    }));
-  }
-
-  function handleClearFilters() {
-    setSearchQuery("");
-    setFilterValues({});
-  }
+  const { sortState, handleSort, sortedRows } = useTableSorting(filteredRows);
 
   function handleRowKeyDown(event: KeyboardEvent<HTMLTableRowElement>, row: T) {
     if (!onRowClick) {
@@ -117,71 +48,6 @@ function DataTable<T>({
       onRowClick(row);
     }
   }
-
-  const filteredRows = useMemo(() => {
-    const normalizedQuery = searchQuery.trim().toLowerCase();
-
-    return rows.filter((row) => {
-      const matchesSearch = (() => {
-        if (!searchKey || !normalizedQuery) {
-          return true;
-        }
-
-        const searchableValue = getSearchableValue(row[searchKey]);
-
-        if (searchableValue === null) {
-          return false;
-        }
-
-        return searchableValue.toLowerCase().includes(normalizedQuery);
-      })();
-
-      if (!matchesSearch) {
-        return false;
-      }
-
-      const matchesFilters =
-        filters?.every((filter) => {
-          const filterId = String(filter.key);
-
-          const selectedIndex = filterValues[filterId];
-
-          if (selectedIndex === undefined || selectedIndex === "") {
-            return true;
-          }
-
-          const option = filter.options[Number(selectedIndex)];
-
-          if (!option) {
-            return true;
-          }
-
-          return Object.is(row[filter.key], option.value);
-        }) ?? true;
-
-      return matchesFilters;
-    });
-  }, [rows, searchKey, searchQuery, filters, filterValues]);
-
-  const sortedRows = useMemo(() => {
-    if (!sortState) {
-      return filteredRows;
-    }
-
-    return [...filteredRows].sort((firstRow, secondRow) => {
-      const firstValue = firstRow[sortState.key];
-
-      const secondValue = secondRow[sortState.key];
-
-      const comparison = compareValues(firstValue, secondValue);
-
-      return sortState.direction === "asc" ? comparison : -comparison;
-    });
-  }, [filteredRows, sortState]);
-
-  const hasActiveControls =
-    searchQuery.trim() !== "" ||
-    Object.values(filterValues).some((value) => value !== "");
 
   return (
     <div className="data-table">
@@ -231,8 +97,8 @@ function DataTable<T>({
         <button
           className="data-table__reset"
           type="button"
-          onClick={handleClearFilters}
-          disabled={!hasActiveControls}
+          onClick={clearFilters}
+          disabled={!hasActiveFilters}
         >
           Clear filters
         </button>
