@@ -68,9 +68,6 @@ Contains the sample `Project[]` and `User[]` datasets used to demonstrate generi
 ### Indexed Access Types — `T[K]`
 `T[K]` gives the exact value type associated with a selected key. For example, `User["active"]` becomes `boolean`, allowing custom cell renderers and filters to remain precisely typed.
 
-### Mapped Types
-Mapped types are used to create a correctly typed column or filter variant for every property in `T`. This helps preserve the relationship between each key and its corresponding value type.
-
 ### Union Types
 Union types combine multiple valid possibilities, such as data columns and display columns, or ascending and descending sort directions.
 
@@ -98,17 +95,6 @@ Runtime checks such as `typeof value === "string"` narrow `unknown` values befor
 ### `unknown`
 `unknown` is used where a generic property may contain different runtime value types. Unlike `any`, it requires the value to be narrowed before it can be used safely.
 
-### React State with TypeScript
-Search text, selected filters, and sorting state are managed with typed `useState` values inside the custom hooks, including the generic `SortState<T>`.
-
-### Derived State
-Filtered and sorted rows are calculated from the original rows and current UI state rather than being stored separately, avoiding duplicated and inconsistent state.
-
-### `useMemo`
-`useMemo` is used inside the filtering and sorting hooks for derived row calculations so they are recomputed only when their relevant dependencies change.
-
-### Avoiding `any`
-The assignment does not use `any` to make the table flexible. Generics, `keyof`, indexed access types, narrowing, and `unknown` preserve flexibility without losing type safety.
 
 The central type relationship in the assignment is:
 
@@ -132,4 +118,4 @@ npm run dev
 
 ## Demo Link
 
-Demo link will be added after deployment.
+[TypeScript DataTable Assignment](https://arbaz-17.github.io/TypeScript-DataTable-Assignment/)
